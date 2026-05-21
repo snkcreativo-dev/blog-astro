@@ -150,6 +150,7 @@ Eso significa que GitHub Pages publica la web sin problema, pero Decap necesita 
 Si quieres montar esa parte paso a paso, consulta:
 
 - `docs/decap-oauth-produccion.md`
+- `docs/decap-oauth-cloudflare-worker.md`
 
 ## Errores comunes que esta base intenta evitar
 

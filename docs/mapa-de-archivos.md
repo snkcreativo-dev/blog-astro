@@ -67,6 +67,8 @@
   - configuracion de Decap CMS
 - `docs/decap-oauth-produccion.md`
   - guia paso a paso para conectar Decap CMS con un proxy OAuth en produccion
+- `docs/decap-oauth-cloudflare-worker.md`
+  - implementacion recomendada para este repo con Cloudflare Workers y `decap-proxy`
 
 ## Despliegue
 

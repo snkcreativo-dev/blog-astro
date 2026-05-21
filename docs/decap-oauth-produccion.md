@@ -331,6 +331,17 @@ Si tu objetivo es llegar rapido a una version funcional:
 
 Si tu objetivo es aprender el flujo en profundidad, entonces ya si tiene sentido crear tu propio proxy.
 
+## Recomendacion concreta para este repo
+
+Para este proyecto en particular, la opcion que recomiendo es:
+
+- Cloudflare Workers
+- `sterlingwes/decap-proxy`
+
+Guia aterrizada:
+
+- [docs/decap-oauth-cloudflare-worker.md](</C:/snoker/astro-didactico/docs/decap-oauth-cloudflare-worker.md>)
+
 ## Fuentes oficiales que conviene tener a mano
 
 - Decap CMS backend overview:
