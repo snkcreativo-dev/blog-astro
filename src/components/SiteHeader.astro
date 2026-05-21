@@ -5,11 +5,22 @@ import { withBase } from '../utils/links';
 
 <header class="site-header">
 	<div class="container site-header__inner">
+		<div class="header-kicker">
+			<span>Edicion digital</span>
+			<span>Astro + Decap CMS</span>
+			<span>Publicacion continua</span>
+		</div>
+	</div>
+
+	<div class="container site-header__masthead">
 		<a class="brand" href={withBase('/')}>
+			<span class="brand__overline">Cuaderno de desarrollo</span>
 			<span class="brand__name">{siteConfig.title}</span>
 			<span class="brand__tagline">{siteConfig.tagline}</span>
 		</a>
+	</div>
 
+	<div class="container site-header__inner site-header__navrow">
 		<nav class="nav" aria-label="Principal">
 			{
 				siteConfig.navigation.map((item) => (
@@ -17,5 +28,9 @@ import { withBase } from '../utils/links';
 				))
 			}
 		</nav>
+
+		<div class="header-note">
+			<span>Lectura lenta, criterio claro y una base lista para publicar.</span>
+		</div>
 	</div>
 </header>

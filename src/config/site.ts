@@ -9,8 +9,8 @@
 export const siteConfig = {
 	title: 'Notas de Taller',
 	description:
-		'Blog sobre desarrollo web moderno con Astro, contenido editable y una base pensada para aprender sin ruido.',
-	tagline: 'Astro, contenido y despliegue explicados con criterio.',
+		'Publicacion editorial sobre desarrollo web moderno, criterio tecnico y proyectos hechos para entenderse.',
+	tagline: 'Edicion digital sobre codigo, contenido y criterio visual.',
 	author: 'Equipo Editorial',
 	locale: 'es-ES',
 	navigation: [

@@ -10,47 +10,59 @@ const posts = await getPublishedPosts();
 const featuredPost = posts.find((post) => post.data.featured) ?? posts[0];
 const recentPosts = posts.filter((post) => post.id !== featuredPost?.id).slice(0, 3);
 const highlightedTags = getUniqueTags(posts).slice(0, 6);
+const leadStory = recentPosts[0];
+const columnStories = recentPosts.slice(1);
 ---
 
 <BaseLayout title={siteConfig.title} description={siteConfig.description}>
 	<section class="hero">
-		<div class="hero__panel">
-			<span class="eyebrow">Base lista para publicar</span>
-			<h1>Un blog con Astro que tambien enseña como esta hecho.</h1>
+		<div class="hero__panel hero__panel--lead">
+			<span class="eyebrow">Tema editorial</span>
+			<p class="hero__issue">Edicion 01 · Producto, frontend y cultura de construccion</p>
+			<h1>Un blog que parece una revista digital y sigue siendo facil de mantener.</h1>
 			<p class="lede">
-				Contenido versionado en Git, frontend claro, despliegue automatico y Decap CMS para
-				editar sin perder el control del repositorio.
+				Portada con jerarquia, ritmo tipografico, criterio visual y una estructura de Astro
+				que no sacrifica claridad tecnica por estetica.
 			</p>
 
 			<div class="actions">
-				<a class="button" href={withBase('/blog/')}>Leer articulos</a>
-				<a class="button--secondary" href={withBase('/admin/')}>Abrir CMS</a>
+				<a class="button" href={withBase('/blog/')}>Abrir la edicion</a>
+				<a class="button--secondary" href={withBase('/sobre-este-blog/')}>Leer la linea editorial</a>
 			</div>
 		</div>
 
-		<aside class="hero__aside panel">
-			<h2>Que resuelve esta base</h2>
-			<ul class="metric-list">
-				<li>Rutas listas para blog</li>
-				<li>RSS y sitemap</li>
-				<li>Deploy en GitHub Pages</li>
-				<li>Contenido editable con Decap</li>
-			</ul>
+		<div class="hero__aside editorial-stack">
+			<aside class="panel issue-panel">
+				<p class="panel-label">En esta entrega</p>
+				<h2>Un sistema visual de publicacion, no una landing generica.</h2>
+				<ul class="metric-list">
+					<li>Portada con voz propia</li>
+					<li>Reticula mas periodistica</li>
+					<li>Archivo legible</li>
+					<li>CMS listo para edicion</li>
+				</ul>
+			</aside>
 
-			<h2 style="margin-top: 1.4rem;">Temas iniciales</h2>
-			<ul class="topic-list">
-				{highlightedTags.map((tag) => <li>{tag}</li>)}
-			</ul>
-		</aside>
+			<aside class="panel note-panel">
+				<p class="panel-label">Temas de mesa</p>
+				<ul class="topic-list">
+					{highlightedTags.map((tag) => <li>{tag}</li>)}
+				</ul>
+			</aside>
+		</div>
 	</section>
 
 	{
 		featuredPost && (
-			<section class="section">
+			<section class="section section--feature">
 				<div class="section-heading">
 					<div>
+						<p class="section-label">Pieza de apertura</p>
 						<h2>Articulo destacado</h2>
-						<p>Una pieza principal para orientar al lector y dar personalidad editorial a la portada.</p>
+						<p>
+							La portada gana peso cuando hay una historia principal y un contexto visual que la
+							acompaña.
+						</p>
 					</div>
 				</div>
 
@@ -59,10 +71,10 @@ const highlightedTags = getUniqueTags(posts).slice(0, 6);
 						<span class="eyebrow">Destacado</span>
 						<h2>{featuredPost.data.title}</h2>
 						<p>{featuredPost.data.description}</p>
-						<div class="post-meta" style="margin-top: 1rem;">
+						<div class="post-meta post-meta--feature">
 							<span>{formatDate(featuredPost.data.publishDate)}</span>
 							<span>{featuredPost.data.author}</span>
-							<span>{featuredPost.data.tags.join(' · ')}</span>
+							<span>{featuredPost.data.tags.join(' / ')}</span>
 						</div>
 					</div>
 
@@ -82,20 +94,39 @@ const highlightedTags = getUniqueTags(posts).slice(0, 6);
 		)
 	}
 
-	<section class="section">
+	<section class="section section--editorial-grid">
 		<div class="section-heading">
 			<div>
+				<p class="section-label">Mesa de redaccion</p>
 				<h2>Ultimos articulos</h2>
 				<p>
-					El listado reutiliza el mismo modelo de datos que usa el CMS. Esa coherencia es una de las
-					mejores virtudes de Astro Content.
+					El mismo contenido tipado alimenta la portada, el archivo y el CMS. Ese contrato
+					claro permite trabajar la forma sin perder la estructura.
 				</p>
 			</div>
-			<a class="button--secondary" href={withBase('/blog/')}>Ver todo el archivo</a>
+			<a class="button--secondary" href={withBase('/blog/')}>Ver archivo completo</a>
 		</div>
 
-		<div class="post-grid">
-			{recentPosts.map((post) => <PostCard post={post} />)}
+		<div class="editorial-grid">
+			{leadStory && (
+				<div class="editorial-grid__lead">
+					<PostCard post={leadStory} />
+				</div>
+			)}
+
+			<div class="editorial-grid__column">
+				{columnStories.map((post) => <PostCard post={post} />)}
+			</div>
+
+			<aside class="panel editorial-brief">
+				<p class="panel-label">Notas de portada</p>
+				<h2>Branding, criterio y lectura.</h2>
+				<p>
+					El tono editorial no sale solo de una fuente serif. Necesita ritmo, contraste,
+					aire, bloques secundarios y una navegacion que parezca propia de una revista.
+				</p>
+				<a class="button--secondary" href={withBase('/admin/')}>Entrar al escritorio editorial</a>
+			</aside>
 		</div>
 	</section>
 </BaseLayout>
