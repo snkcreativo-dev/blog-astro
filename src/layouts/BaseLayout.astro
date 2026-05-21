@@ -56,5 +56,27 @@ const socialImage = Astro.site ? new URL(withBase('/favicon.svg'), Astro.site).t
 			</main>
 			<SiteFooter />
 		</div>
+		<script is:inline>
+			(() => {
+				const header = document.querySelector('.site-header');
+
+				if (!header) return;
+
+				let lastScrollY = window.scrollY;
+				const hideAfter = 96;
+
+				const syncHeaderState = () => {
+					const currentScrollY = window.scrollY;
+					const scrollingDown = currentScrollY > lastScrollY;
+					const nearTop = currentScrollY <= hideAfter;
+
+					header.classList.toggle('site-header--hidden', scrollingDown && !nearTop);
+					lastScrollY = currentScrollY;
+				};
+
+				syncHeaderState();
+				window.addEventListener('scroll', syncHeaderState, { passive: true });
+			})();
+		</script>
 	</body>
 </html>
