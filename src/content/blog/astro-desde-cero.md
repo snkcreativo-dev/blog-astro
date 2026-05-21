@@ -36,7 +36,7 @@ Suele contener:
 
 Aqui vive el contenido real. Es donde el proyecto gana valor con el tiempo.
 
-Separar contenido y presentacion permite cambiar el diseño sin tocar los textos, y viceversa.
+Separar contenido y presentacion permite cambiar el diseno sin tocar los textos, y viceversa.
 
 ### 4. `astro.config.mjs`
 

@@ -49,7 +49,7 @@ Si estas aprendiendo, la ruta mas util suele ser esta:
 3. entender `src/pages/blog/[slug].astro`
 4. abrir `public/admin/index.html`
 
-Ese recorrido enseña el flujo completo:
+Ese recorrido ensena el flujo completo:
 
 - donde nace el contenido
 - como se valida
