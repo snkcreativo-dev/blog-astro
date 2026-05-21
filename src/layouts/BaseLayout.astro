@@ -75,25 +75,52 @@ const socialImage = Astro.site ? new URL(withBase('/favicon.svg'), Astro.site).t
 				 * Contexto practico:
 				 * - En una web editorial, el header suele ser alto por branding y navegacion.
 				 * - Esta tecnica evita que robe demasiada altura cuando el lector ya esta leyendo.
+				 *
+				 * Ajuste de estabilidad:
+				 * - Ignoramos microcambios de scroll para que touchpads y ruedas sensibles
+				 *   no hagan que la cabecera parpadee o parezca "nerviosa".
 				 */
 				const header = document.querySelector('.site-header');
 
 				if (!header) return;
 
 				let lastScrollY = window.scrollY;
+				let ticking = false;
 				const hideAfter = 96;
+				const minDelta = 12;
 
 				const syncHeaderState = () => {
 					const currentScrollY = window.scrollY;
-					const scrollingDown = currentScrollY > lastScrollY;
 					const nearTop = currentScrollY <= hideAfter;
+					const delta = currentScrollY - lastScrollY;
 
-					header.classList.toggle('site-header--hidden', scrollingDown && !nearTop);
+					if (nearTop) {
+						header.classList.remove('site-header--hidden');
+						lastScrollY = currentScrollY;
+						ticking = false;
+						return;
+					}
+
+					if (Math.abs(delta) < minDelta) {
+						ticking = false;
+						return;
+					}
+
+					header.classList.toggle('site-header--hidden', delta > 0);
 					lastScrollY = currentScrollY;
+					ticking = false;
 				};
 
 				syncHeaderState();
-				window.addEventListener('scroll', syncHeaderState, { passive: true });
+				window.addEventListener(
+					'scroll',
+					() => {
+						if (ticking) return;
+						ticking = true;
+						window.requestAnimationFrame(syncHeaderState);
+					},
+					{ passive: true }
+				);
 			})();
 		</script>
 	</body>
