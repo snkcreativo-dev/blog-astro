@@ -5,6 +5,10 @@
  *
  * Cuando se usa:
  * - En layouts, cabecera, footer, RSS y portada.
+ *
+ * Relacion con la arquitectura:
+ * - Si cambias nombre, claim o navegacion aqui, casi todo el sitio se actualiza solo.
+ * - Esta es una buena practica cuando el proyecto tiene una identidad editorial clara.
  */
 export const siteConfig = {
 	title: 'Notas de Taller',

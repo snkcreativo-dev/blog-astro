@@ -2,6 +2,11 @@ import rss from '@astrojs/rss';
 import { siteConfig } from '../config/site';
 import { getPublishedPosts } from '../utils/blog';
 
+/**
+ * BLOQUE: Feed RSS
+ * - Expone los articulos publicados en un formato legible por lectores RSS.
+ * - Es util para sindicar contenido sin depender de JavaScript en cliente.
+ */
 export async function GET(context) {
 	const posts = await getPublishedPosts();
 

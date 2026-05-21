@@ -3,6 +3,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
 import { getPublishedPosts, getUniqueTags, slugifyTerm } from '../../utils/blog';
 
+/**
+ * BLOQUE: Rutas estaticas para etiquetas
+ * - Genera una pagina por cada tema detectado en los posts publicados.
+ * - Es un ejemplo claro de como una taxonomia ligera puede convertirse en navegacion real.
+ */
 export async function getStaticPaths() {
 	const posts = await getPublishedPosts();
 	const tags = getUniqueTags(posts);
@@ -14,6 +19,11 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.props;
+
+/**
+ * BLOQUE: Filtro por etiqueta normalizada
+ * - Compara cada tag usando `slugifyTerm()` para evitar diferencias por acentos o mayusculas.
+ */
 const posts = (await getPublishedPosts()).filter((post) =>
 	post.data.tags.some((postTag) => slugifyTerm(postTag) === tag),
 );

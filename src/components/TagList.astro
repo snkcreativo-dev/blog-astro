@@ -9,6 +9,11 @@ interface Props {
 const { tags } = Astro.props;
 ---
 
+<!--
+	BLOQUE: Lista de etiquetas enlazadas
+	- Convierte una lista simple de strings en navegacion tematica.
+	- Reusa `slugifyTerm()` para asegurar que las URLs coincidan con las rutas generadas.
+-->
 {
 	tags.length > 0 && (
 		<ul class="tag-list" aria-label="Etiquetas">
