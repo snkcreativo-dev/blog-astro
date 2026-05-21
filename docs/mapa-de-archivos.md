@@ -32,6 +32,8 @@
   - taxonomia enlazada
 - `src/styles/global.css`
   - tono visual del sitio
+- `docs/reticula-editorial.md`
+  - explica como funciona la reticula 12/8/4 y como recolocar modulos sin parchear
 
 ## Rutas
 

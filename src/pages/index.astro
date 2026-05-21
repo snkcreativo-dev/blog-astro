@@ -36,7 +36,9 @@ const columnStories = recentPosts.slice(1);
 
 			<div class="actions">
 				<a class="button" href={withBase('/blog/')}>Abrir la edicion</a>
-				<a class="button--secondary" href={withBase('/sobre-este-blog/')}>Leer la linea editorial</a>
+				<a class="button--secondary" href={withBase('/sobre-este-blog/')}>
+					Leer la linea editorial
+				</a>
 			</div>
 		</div>
 
@@ -120,7 +122,8 @@ const columnStories = recentPosts.slice(1);
 			<!--
 				BLOQUE: Reticula editorial
 				- Reparte el contenido en historia principal, columna secundaria y bloque de contexto.
-				- No añade logica nueva: solo da jerarquia visual al mismo conjunto de posts.
+				- La jerarquia se apoya en una reticula 12/8/4 para que el layout no dependa
+				  de margenes aislados ni anchos arbitrarios.
 			-->
 			{leadStory && (
 				<div class="editorial-grid__lead">

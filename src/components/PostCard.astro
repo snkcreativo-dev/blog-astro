@@ -19,7 +19,7 @@ const readingTime = estimateReadingTime(post.body ?? '');
 	- Se reutiliza en portada, archivo y lecturas relacionadas.
 
 	Por que existe:
-	- En Astro conviene encapsular estas piezas repetidas para que el diseño cambie en un solo sitio.
+	- En Astro conviene encapsular estas piezas repetidas para que el diseno cambie en un solo sitio.
 -->
 <a class="post-card" href={withBase(`/blog/${post.id}/`)}>
 	{
@@ -33,7 +33,7 @@ const readingTime = estimateReadingTime(post.body ?? '');
 		)
 	}
 
-	<div>
+	<div class="post-card__body">
 		<div class="post-meta">
 			<span>{formatDate(post.data.publishDate)}</span>
 			<span>{readingTime} min de lectura</span>
@@ -44,5 +44,7 @@ const readingTime = estimateReadingTime(post.body ?? '');
 		<p>{post.data.excerpt}</p>
 	</div>
 
-	<TagList tags={post.data.tags.slice(0, 3)} />
+	<div class="post-card__footer">
+		<TagList tags={post.data.tags.slice(0, 3)} />
+	</div>
 </a>

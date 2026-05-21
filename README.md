@@ -86,6 +86,7 @@ Estas utilidades hacen que las paginas Astro no acumulen logica repetida.
 - `src/layouts/BaseLayout.astro`
 - `src/components/`
 - `src/styles/global.css`
+- `docs/reticula-editorial.md`
 
 Aqui vive el tono editorial del proyecto: layout, cabecera, tarjetas, jerarquia visual y comportamiento del header.
 
