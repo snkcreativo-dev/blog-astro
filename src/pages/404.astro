@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../utils/links';
+---
+
+<BaseLayout
+	title="404"
+	description="La pagina que buscas no existe o ha cambiado de ruta."
+>
+	<section class="page-hero">
+		<span class="eyebrow">Error 404</span>
+		<h1>Esta ruta no existe.</h1>
+		<p>
+			En un blog es normal mover contenido o cambiar slugs. Una pagina 404 clara ayuda a no perder
+			al lector.
+		</p>
+
+		<div class="actions">
+			<a class="button" href={withBase('/')}>Volver al inicio</a>
+			<a class="button--secondary" href={withBase('/blog/')}>Ir al blog</a>
+		</div>
+	</section>
+</BaseLayout>

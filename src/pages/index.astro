@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { siteConfig } from '../config/site';
+import { getPublishedPosts, getUniqueTags } from '../utils/blog';
+import { formatDate } from '../utils/format';
+import { withBase } from '../utils/links';
+
+const posts = await getPublishedPosts();
+const featuredPost = posts.find((post) => post.data.featured) ?? posts[0];
+const recentPosts = posts.filter((post) => post.id !== featuredPost?.id).slice(0, 3);
+const highlightedTags = getUniqueTags(posts).slice(0, 6);
+---
+
+<BaseLayout title={siteConfig.title} description={siteConfig.description}>
+	<section class="hero">
+		<div class="hero__panel">
+			<span class="eyebrow">Base lista para publicar</span>
+			<h1>Un blog con Astro que tambien enseña como esta hecho.</h1>
+			<p class="lede">
+				Contenido versionado en Git, frontend claro, despliegue automatico y Decap CMS para
+				editar sin perder el control del repositorio.
+			</p>
+
+			<div class="actions">
+				<a class="button" href={withBase('/blog/')}>Leer articulos</a>
+				<a class="button--secondary" href={withBase('/admin/')}>Abrir CMS</a>
+			</div>
+		</div>
+
+		<aside class="hero__aside panel">
+			<h2>Que resuelve esta base</h2>
+			<ul class="metric-list">
+				<li>Rutas listas para blog</li>
+				<li>RSS y sitemap</li>
+				<li>Deploy en GitHub Pages</li>
+				<li>Contenido editable con Decap</li>
+			</ul>
+
+			<h2 style="margin-top: 1.4rem;">Temas iniciales</h2>
+			<ul class="topic-list">
+				{highlightedTags.map((tag) => <li>{tag}</li>)}
+			</ul>
+		</aside>
+	</section>
+
+	{
+		featuredPost && (
+			<section class="section">
+				<div class="section-heading">
+					<div>
+						<h2>Articulo destacado</h2>
+						<p>Una pieza principal para orientar al lector y dar personalidad editorial a la portada.</p>
+					</div>
+				</div>
+
+				<a class="feature-card" href={withBase(`/blog/${featuredPost.id}/`)}>
+					<div>
+						<span class="eyebrow">Destacado</span>
+						<h2>{featuredPost.data.title}</h2>
+						<p>{featuredPost.data.description}</p>
+						<div class="post-meta" style="margin-top: 1rem;">
+							<span>{formatDate(featuredPost.data.publishDate)}</span>
+							<span>{featuredPost.data.author}</span>
+							<span>{featuredPost.data.tags.join(' · ')}</span>
+						</div>
+					</div>
+
+					<div>
+						{featuredPost.data.cover ? (
+							<img
+								class="feature-card__cover"
+								src={withBase(featuredPost.data.cover)}
+								alt={featuredPost.data.coverAlt ?? `Portada de ${featuredPost.data.title}`}
+							/>
+						) : (
+							<div class="feature-card__cover" />
+						)}
+					</div>
+				</a>
+			</section>
+		)
+	}
+
+	<section class="section">
+		<div class="section-heading">
+			<div>
+				<h2>Ultimos articulos</h2>
+				<p>
+					El listado reutiliza el mismo modelo de datos que usa el CMS. Esa coherencia es una de las
+					mejores virtudes de Astro Content.
+				</p>
+			</div>
+			<a class="button--secondary" href={withBase('/blog/')}>Ver todo el archivo</a>
+		</div>
+
+		<div class="post-grid">
+			{recentPosts.map((post) => <PostCard post={post} />)}
+		</div>
+	</section>
+</BaseLayout>

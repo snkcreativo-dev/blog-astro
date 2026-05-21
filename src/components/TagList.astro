@@ -1,0 +1,22 @@
+---
+import { slugifyTerm } from '../utils/blog';
+import { withBase } from '../utils/links';
+
+interface Props {
+	tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+{
+	tags.length > 0 && (
+		<ul class="tag-list" aria-label="Etiquetas">
+			{tags.map((tag) => (
+				<li>
+					<a href={withBase(`/temas/${slugifyTerm(tag)}/`)}>{tag}</a>
+				</li>
+			))}
+		</ul>
+	)
+}

@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+import { siteConfig } from '../config/site';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { withBase } from '../utils/links';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = siteConfig.title,
+	description = siteConfig.description,
+} = Astro.props;
+
+const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.title}`;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
+const socialImage = Astro.site ? new URL(withBase('/favicon.svg'), Astro.site).toString() : undefined;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#0e7c86" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		{canonical && <meta property="og:url" content={canonical} />}
+		{socialImage && <meta property="og:image" content={socialImage} />}
+		<meta name="twitter:card" content="summary_large_image" />
+		{canonical && <link rel="canonical" href={canonical} />}
+		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+		<link rel="icon" href={withBase('/favicon.ico')} />
+		<link rel="alternate" type="application/rss+xml" title="RSS" href={withBase('/rss.xml')} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<title>{pageTitle}</title>
+	</head>
+	<body>
+		<div class="site-shell">
+			<SiteHeader />
+			<main class="main-content">
+				<div class="container">
+					<slot />
+				</div>
+			</main>
+			<SiteFooter />
+		</div>
+	</body>
+</html>

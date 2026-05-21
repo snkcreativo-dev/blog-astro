@@ -1,0 +1,21 @@
+---
+import { siteConfig } from '../config/site';
+import { withBase } from '../utils/links';
+---
+
+<header class="site-header">
+	<div class="container site-header__inner">
+		<a class="brand" href={withBase('/')}>
+			<span class="brand__name">{siteConfig.title}</span>
+			<span class="brand__tagline">{siteConfig.tagline}</span>
+		</a>
+
+		<nav class="nav" aria-label="Principal">
+			{
+				siteConfig.navigation.map((item) => (
+					<a href={withBase(item.href)}>{item.label}</a>
+				))
+			}
+		</nav>
+	</div>
+</header>

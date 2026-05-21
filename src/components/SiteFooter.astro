@@ -1,0 +1,26 @@
+---
+import { siteConfig } from '../config/site';
+import { withBase } from '../utils/links';
+---
+
+<footer class="site-footer">
+	<div class="container site-footer__inner">
+		<div>
+			<h2>{siteConfig.title}</h2>
+			<p class="site-footer__copy">
+				Base didactica para construir un blog con Astro, contenido versionado en Git y un flujo
+				editorial comprensible.
+			</p>
+		</div>
+
+		<ul class="footer-links">
+			{
+				siteConfig.footerLinks.map((item) => (
+					<li>
+						<a href={item.href.startsWith('http') ? item.href : withBase(item.href)}>{item.label}</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</footer>

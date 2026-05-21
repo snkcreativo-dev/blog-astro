@@ -1,0 +1,81 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import TagList from '../../components/TagList.astro';
+import { estimateReadingTime, getPublishedPosts } from '../../utils/blog';
+import { formatDate } from '../../utils/format';
+import { withBase } from '../../utils/links';
+
+export async function getStaticPaths() {
+	const posts = await getPublishedPosts();
+
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const readingTime = estimateReadingTime(post.body ?? '');
+const relatedPosts = (await getPublishedPosts())
+	.filter((candidate) => candidate.id !== post.id)
+	.filter((candidate) =>
+		candidate.data.tags.some((tag) => post.data.tags.includes(tag)),
+	)
+	.slice(0, 3);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+	<article>
+		<header class="post-header">
+			<a class="eyebrow" href={withBase('/blog/')}>Volver al blog</a>
+			<h1 class="post-title">{post.data.title}</h1>
+			<p class="post-excerpt">{post.data.description}</p>
+
+			<div class="post-meta">
+				<span>{formatDate(post.data.publishDate)}</span>
+				<span>{readingTime} min de lectura</span>
+				<span>{post.data.author}</span>
+				{post.data.updatedDate && <span>Actualizado: {formatDate(post.data.updatedDate)}</span>}
+			</div>
+
+			<TagList tags={post.data.tags} />
+		</header>
+
+		{
+			post.data.cover && (
+				<img
+					class="feature-card__cover"
+					src={withBase(post.data.cover)}
+					alt={post.data.coverAlt ?? `Portada de ${post.data.title}`}
+				/>
+			)
+		}
+
+		<div class="prose">
+			<Content />
+		</div>
+	</article>
+
+	{
+		relatedPosts.length > 0 && (
+			<section class="section">
+				<div class="section-heading">
+					<div>
+						<h2>Lecturas relacionadas</h2>
+						<p>
+							Reusar la misma coleccion para descubrir contenidos afines es una ventaja directa de tener
+							datos consistentes.
+						</p>
+					</div>
+				</div>
+
+				<div class="post-grid">
+					{relatedPosts.map((relatedPost) => <PostCard post={relatedPost} />)}
+				</div>
+			</section>
+		)
+	}
+</BaseLayout>

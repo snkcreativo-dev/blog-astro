@@ -1,0 +1,40 @@
+---
+import type { BlogPost } from '../utils/blog';
+import { estimateReadingTime } from '../utils/blog';
+import { formatDate } from '../utils/format';
+import { withBase } from '../utils/links';
+import TagList from './TagList.astro';
+
+interface Props {
+	post: BlogPost;
+}
+
+const { post } = Astro.props;
+const readingTime = estimateReadingTime(post.body ?? '');
+---
+
+<a class="post-card" href={withBase(`/blog/${post.id}/`)}>
+	{
+		post.data.cover && (
+			<img
+				class="post-card__cover"
+				src={withBase(post.data.cover)}
+				alt={post.data.coverAlt ?? `Imagen de portada de ${post.data.title}`}
+				loading="lazy"
+			/>
+		)
+	}
+
+	<div>
+		<div class="post-meta">
+			<span>{formatDate(post.data.publishDate)}</span>
+			<span>{readingTime} min de lectura</span>
+			<span>{post.data.author}</span>
+		</div>
+
+		<h3>{post.data.title}</h3>
+		<p>{post.data.excerpt}</p>
+	</div>
+
+	<TagList tags={post.data.tags.slice(0, 3)} />
+</a>

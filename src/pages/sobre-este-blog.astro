@@ -1,0 +1,29 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/**
+ * BLOQUE: Pagina fija desde coleccion
+ * - Muestra que no todo contenido editable tiene que ser un post listable.
+ * - Es un ejemplo util para futuras paginas como contacto, manifesto o politica editorial.
+ */
+const pageEntry = await getEntry('pages', 'sobre-este-blog');
+
+if (!pageEntry) {
+	throw new Error('No se encontro la pagina "sobre-este-blog" en la coleccion pages.');
+}
+
+const { Content } = await render(pageEntry);
+---
+
+<BaseLayout title={pageEntry.data.title} description={pageEntry.data.description}>
+	<section class="page-hero">
+		<span class="eyebrow">Pagina fija editable</span>
+		<h1>{pageEntry.data.title}</h1>
+		<p>{pageEntry.data.description}</p>
+	</section>
+
+	<div class="prose">
+		<Content />
+	</div>
+</BaseLayout>

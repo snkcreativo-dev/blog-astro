@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex" />
+		<title>Panel editorial | Notas de Taller</title>
+		<style>
+			:root {
+				color-scheme: light;
+				--bg: #f7f2e8;
+				--surface: rgba(255, 252, 246, 0.92);
+				--line: rgba(33, 50, 58, 0.14);
+				--text: #20313a;
+				--muted: #5f6f76;
+				--brand: #0e7c86;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				font-family: Manrope, system-ui, sans-serif;
+				color: var(--text);
+				background: linear-gradient(180deg, #fbf6ed 0%, #f4eee3 100%);
+			}
+
+			.admin-help {
+				position: sticky;
+				top: 0;
+				z-index: 10;
+				display: grid;
+				gap: 0.4rem;
+				padding: 1rem 1.25rem;
+				background: var(--surface);
+				border-bottom: 1px solid var(--line);
+				backdrop-filter: blur(12px);
+			}
+
+			.admin-help strong {
+				font-size: 1rem;
+			}
+
+			.admin-help p {
+				margin: 0;
+				color: var(--muted);
+				line-height: 1.55;
+			}
+
+			.admin-help code {
+				padding: 0.15rem 0.35rem;
+				border-radius: 0.35rem;
+				background: rgba(14, 124, 134, 0.1);
+			}
+
+			#nc-root {
+				min-height: calc(100vh - 110px);
+			}
+		</style>
+		<script>
+			window.CMS_MANUAL_INIT = true;
+			window.DECAP_REPO = window.DECAP_REPO || '';
+			window.DECAP_AUTH_BASE_URL = window.DECAP_AUTH_BASE_URL || '';
+			window.DECAP_AUTH_ENDPOINT = window.DECAP_AUTH_ENDPOINT || '';
+
+			function inferGitHubRepo() {
+				const host = window.location.hostname;
+				const pathParts = window.location.pathname.split('/').filter(Boolean);
+
+				if (!host.endsWith('.github.io')) {
+					return 'TU_USUARIO/astro-didactico';
+				}
+
+				const owner = host.split('.')[0];
+				const repoName = pathParts[0] && pathParts[0] !== 'admin' ? pathParts[0] : `${owner}.github.io`;
+				return `${owner}/${repoName}`;
+			}
+
+			function buildCmsConfig() {
+				const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+				const repo = window.DECAP_REPO || inferGitHubRepo();
+
+				const backend = isLocalHost
+					? {
+							name: 'git-gateway',
+							branch: 'main',
+						}
+					: {
+							name: 'github',
+							repo,
+							branch: 'main',
+							use_graphql: true,
+							...(window.DECAP_AUTH_BASE_URL ? { base_url: window.DECAP_AUTH_BASE_URL } : {}),
+							...(window.DECAP_AUTH_ENDPOINT
+								? { auth_endpoint: window.DECAP_AUTH_ENDPOINT }
+								: {}),
+						};
+
+				return {
+					load_config_file: false,
+					local_backend: isLocalHost ? { url: 'http://localhost:8081/api/v1' } : false,
+					backend,
+					media_folder: 'public/uploads',
+					public_folder: '/uploads',
+					slug: {
+						encoding: 'ascii',
+						clean_accents: true,
+					},
+					editor: {
+						preview: false,
+					},
+					collections: [
+						{
+							label: 'Entradas',
+							name: 'blog',
+							folder: 'src/content/blog',
+							create: true,
+							slug: '{{slug}}',
+							summary: '{{title}} · {{publishDate}}',
+							fields: [
+								{ label: 'Titulo', name: 'title', widget: 'string' },
+								{ label: 'Descripcion SEO', name: 'description', widget: 'text' },
+								{ label: 'Extracto', name: 'excerpt', widget: 'text' },
+								{ label: 'Fecha de publicacion', name: 'publishDate', widget: 'datetime' },
+								{
+									label: 'Fecha de actualizacion',
+									name: 'updatedDate',
+									widget: 'datetime',
+									required: false,
+								},
+								{ label: 'Borrador', name: 'draft', widget: 'boolean', default: false },
+								{ label: 'Destacado', name: 'featured', widget: 'boolean', default: false },
+								{ label: 'Autor', name: 'author', widget: 'string', default: 'Equipo Editorial' },
+								{ label: 'Etiquetas', name: 'tags', widget: 'list' },
+								{
+									label: 'Imagen de portada',
+									name: 'cover',
+									widget: 'image',
+									required: false,
+								},
+								{
+									label: 'Texto alternativo de la portada',
+									name: 'coverAlt',
+									widget: 'string',
+									required: false,
+								},
+								{ label: 'Contenido', name: 'body', widget: 'markdown' },
+							],
+						},
+						{
+							label: 'Paginas fijas',
+							name: 'pages',
+							files: [
+								{
+									label: 'Sobre este blog',
+									name: 'sobre-este-blog',
+									file: 'src/content/pages/sobre-este-blog.md',
+									fields: [
+										{ label: 'Titulo', name: 'title', widget: 'string' },
+										{ label: 'Descripcion', name: 'description', widget: 'text' },
+										{ label: 'Contenido', name: 'body', widget: 'markdown' },
+									],
+								},
+							],
+						},
+					],
+				};
+			}
+
+			window.addEventListener('load', () => {
+				const message = document.querySelector('[data-admin-message]');
+				const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+				const repo = window.DECAP_REPO || inferGitHubRepo();
+
+				message.textContent = isLocalHost
+					? 'Modo local activo. Usa "npm run dev:full" para editar Markdown del repositorio sin depender del OAuth de GitHub.'
+					: `Produccion preparada para el repositorio ${repo}. Para guardar cambios desde GitHub Pages necesitas configurar un proxy OAuth y definir DECAP_AUTH_BASE_URL / DECAP_AUTH_ENDPOINT.`;
+
+				window.initCMS({
+					config: buildCmsConfig(),
+					load_config_file: false,
+				});
+			});
+		</script>
+		<script defer src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+	</head>
+	<body>
+		<div class="admin-help">
+			<strong>Panel editorial de Notas de Taller</strong>
+			<p data-admin-message></p>
+			<p>
+				El contenido que edites aqui impacta en <code>src/content</code>, que es justo lo que Astro
+				compila para el blog publico.
+			</p>
+		</div>
+		<div id="nc-root"></div>
+	</body>
+</html>

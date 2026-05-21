@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPublishedPosts, getUniqueTags, slugifyTerm } from '../../utils/blog';
+
+export async function getStaticPaths() {
+	const posts = await getPublishedPosts();
+	const tags = getUniqueTags(posts);
+
+	return tags.map((tag) => ({
+		params: { tag: slugifyTerm(tag) },
+		props: { tag },
+	}));
+}
+
+const { tag } = Astro.props;
+const posts = (await getPublishedPosts()).filter((post) =>
+	post.data.tags.some((postTag) => slugifyTerm(postTag) === tag),
+);
+const heading = posts[0]?.data.tags.find((postTag) => slugifyTerm(postTag) === tag) ?? tag;
+---
+
+<BaseLayout
+	title={`Tema: ${heading}`}
+	description={`Archivo de articulos marcados con la etiqueta ${heading}.`}
+>
+	<section class="page-hero">
+		<span class="eyebrow">Taxonomia simple</span>
+		<h1>{heading}</h1>
+		<p>
+			Las etiquetas son una forma ligera de relacionar contenidos sin introducir un sistema de
+			categorias demasiado rigido para una base didactica.
+		</p>
+	</section>
+
+	{
+		posts.length > 0 ? (
+			<section class="section">
+				<div class="post-grid">
+					{posts.map((post) => <PostCard post={post} />)}
+				</div>
+			</section>
+		) : (
+			<section class="empty-state">
+				<p>No hay articulos publicados con esta etiqueta todavia.</p>
+			</section>
+		)
+	}
+</BaseLayout>
