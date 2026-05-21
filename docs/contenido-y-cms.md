@@ -57,3 +57,9 @@ Pensar que con publicar `/admin` ya queda resuelto el CMS en produccion.
 
 No es asi.
 GitHub Pages publica archivos, pero no te da automaticamente la autenticacion que Decap necesita para escribir en el repositorio.
+
+## Donde seguir
+
+Si quieres resolver esa parte completa en este proyecto, continua en:
+
+- [docs/decap-oauth-produccion.md](</C:/snoker/astro-didactico/docs/decap-oauth-produccion.md>)

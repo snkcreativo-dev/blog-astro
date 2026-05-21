@@ -147,6 +147,10 @@ La web publica funciona ya con GitHub Actions, pero el panel `/admin` en producc
 
 Eso significa que GitHub Pages publica la web sin problema, pero Decap necesita un proxy OAuth adicional para escribir en el repositorio desde produccion.
 
+Si quieres montar esa parte paso a paso, consulta:
+
+- `docs/decap-oauth-produccion.md`
+
 ## Errores comunes que esta base intenta evitar
 
 - mezclar logica editorial en cada pagina en lugar de centralizarla en utilidades

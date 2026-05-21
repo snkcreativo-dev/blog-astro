@@ -129,6 +129,10 @@ Si `/admin` abre pero no guarda en produccion, revisa:
 - `DECAP_AUTH_BASE_URL`
 - `DECAP_AUTH_ENDPOINT`
 
+Guia recomendada:
+
+- [docs/decap-oauth-produccion.md](</C:/snoker/astro-didactico/docs/decap-oauth-produccion.md>)
+
 ## 7. Regla mental util
 
 Cuando no sepas donde tocar:

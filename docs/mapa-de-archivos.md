@@ -65,6 +65,8 @@
 
 - `public/admin/index.html`
   - configuracion de Decap CMS
+- `docs/decap-oauth-produccion.md`
+  - guia paso a paso para conectar Decap CMS con un proxy OAuth en produccion
 
 ## Despliegue
 
