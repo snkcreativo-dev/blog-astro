@@ -20,18 +20,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # BLOQUE: Se descarga el contenido del repo para que el workflow pueda instalar y compilar.
       - name: Checkout
         uses: actions/checkout@v4
 
+      # BLOQUE: Prepara Node en una version coherente con el proyecto local.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
+      # BLOQUE: GitHub Pages necesita este paso para reservar el entorno de despliegue.
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      # BLOQUE: Resuelve la URL publica final.
+      # - Si el repo es de proyecto, suele desplegarse en /nombre-del-repo
+      # - Si fuera un repo tipo usuario.github.io, iria en la raiz del dominio
       - name: Resolve public URL
         shell: bash
         run: |
@@ -55,12 +61,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # BLOQUE: Valida tipos, rutas y colecciones antes de construir.
       - name: Validate project
         run: npm run check
 
+      # BLOQUE: Genera el sitio estatico que despues Pages publicara.
       - name: Build site
         run: npm run build
 
+      # BLOQUE: Sube `dist/` como artefacto intermedio para el job de deploy.
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

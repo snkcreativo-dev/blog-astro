@@ -60,6 +60,15 @@
 			}
 		</style>
 		<script>
+			/**
+			 * BLOQUE: Arranque manual de Decap CMS
+			 * - No usamos `config.yml` externo; construimos la configuracion desde JavaScript.
+			 * - Esto da mas control para adaptar el backend segun local o produccion.
+			 *
+			 * Por que puede interesar en un proyecto didactico:
+			 * - Hace visible toda la relacion entre CMS, GitHub y carpetas del proyecto.
+			 * - Evita esconder logica importante en un archivo adicional.
+			 */
 			window.CMS_MANUAL_INIT = true;
 			window.DECAP_REPO = window.DECAP_REPO || 'snkcreativo-dev/blog-astro';
 			window.DECAP_AUTH_BASE_URL = window.DECAP_AUTH_BASE_URL || '';
@@ -74,11 +83,20 @@
 				}
 
 				const owner = host.split('.')[0];
-				const repoName = pathParts[0] && pathParts[0] !== 'admin' ? pathParts[0] : `${owner}.github.io`;
+				const repoName =
+					pathParts[0] && pathParts[0] !== 'admin' ? pathParts[0] : `${owner}.github.io`;
 				return `${owner}/${repoName}`;
 			}
 
 			function buildCmsConfig() {
+				/**
+				 * BLOQUE: Seleccion de backend
+				 * - En local usamos `local_backend` con `decap-server`.
+				 * - En produccion preparamos GitHub, que despues necesita OAuth para escribir.
+				 *
+				 * Error comun:
+				 * - Pensar que GitHub Pages por si sola ya resuelve la autenticacion del CMS.
+				 */
 				const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 				const repo = window.DECAP_REPO || inferGitHubRepo();
 
@@ -118,7 +136,7 @@
 							folder: 'src/content/blog',
 							create: true,
 							slug: '{{slug}}',
-							summary: '{{title}} · {{publishDate}}',
+							summary: '{{title}} / {{publishDate}}',
 							fields: [
 								{ label: 'Titulo', name: 'title', widget: 'string' },
 								{ label: 'Descripcion SEO', name: 'description', widget: 'text' },

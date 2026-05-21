@@ -7,6 +7,15 @@ import { estimateReadingTime, getPublishedPosts } from '../../utils/blog';
 import { formatDate } from '../../utils/format';
 import { withBase } from '../../utils/links';
 
+/**
+ * BLOQUE: Rutas estaticas por slug
+ * - Astro necesita conocer de antemano que URLs debe generar en un sitio estatico.
+ * - Cada post publicado crea una ruta como `/blog/mi-articulo/`.
+ *
+ * Error comun:
+ * - Pensar que `[slug].astro` "lee la URL en runtime" como si fuera una app SPA.
+ * - En este proyecto, la pagina nace ya construida durante el build.
+ */
 export async function getStaticPaths() {
 	const posts = await getPublishedPosts();
 
@@ -19,6 +28,12 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const readingTime = estimateReadingTime(post.body ?? '');
+
+/**
+ * BLOQUE: Relacionados por etiquetas compartidas
+ * - Busca afinidad editorial usando tags, no una categoria fija.
+ * - Es una solucion ligera y suficiente para un blog pequeno o medio.
+ */
 const relatedPosts = (await getPublishedPosts())
 	.filter((candidate) => candidate.id !== post.id)
 	.filter((candidate) =>
@@ -29,6 +44,11 @@ const relatedPosts = (await getPublishedPosts())
 
 <BaseLayout title={post.data.title} description={post.data.description}>
 	<article>
+		<!--
+			BLOQUE: Cabecera del articulo
+			- Junta titulo, descripcion, metadatos y tags.
+			- Funciona como contexto rapido antes de entrar al cuerpo.
+		-->
 		<header class="post-header">
 			<a class="eyebrow" href={withBase('/blog/')}>Volver al blog</a>
 			<h1 class="post-title">{post.data.title}</h1>

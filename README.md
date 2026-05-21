@@ -1,44 +1,103 @@
 # Notas de Taller
 
-Blog didactico construido con Astro y preparado para:
+Publicacion editorial construida con Astro y pensada para aprender mientras se mantiene publicable.
 
-- publicar contenido en Markdown con Astro Content Collections
-- editar entradas con Decap CMS
-- desplegar automaticamente en GitHub Pages
-- mantener una base clara para aprender y crecer sin sobre-ingenieria
+## Objetivo didactico
 
-## Que incluye esta base
+Esta base intenta ensenar tres cosas al mismo tiempo:
 
-- Blog con portada, listado, pagina individual y pagina fija "Sobre este blog"
-- Colecciones tipadas con validacion de contenido
-- SEO basico, sitemap, RSS y `robots.txt`
+1. como estructurar un blog moderno con Astro
+2. como mantener el contenido en Git sin perder ergonomia editorial
+3. como desplegar un sitio real en GitHub Pages sin esconder la complejidad importante
+
+## Que incluye
+
+- Portada editorial
+- Archivo de articulos
+- Paginas fijas editables
+- Content Collections tipadas
+- RSS, sitemap y `robots.txt`
 - GitHub Actions para despliegue
-- Decap CMS con:
-  - modo local funcional mediante `decap-server`
-  - backend GitHub preparado para produccion
-  - explicacion del paso OAuth necesario para escribir en GitHub desde `/admin`
+- Decap CMS con modo local listo y backend GitHub preparado
 
-## Estructura pensada para aprender
+## Estructura del proyecto
 
 ```text
 /
-├─ .github/workflows/
-├─ public/
-│  ├─ admin/
-│  └─ uploads/
-├─ src/
-│  ├─ components/
-│  ├─ config/
-│  ├─ content/
-│  │  ├─ blog/
-│  │  └─ pages/
-│  ├─ layouts/
-│  ├─ pages/
-│  ├─ styles/
-│  └─ utils/
-├─ astro.config.mjs
-└─ package.json
+|-- .github/workflows/
+|-- public/
+|   |-- admin/
+|   `-- uploads/
+|-- src/
+|   |-- components/
+|   |-- config/
+|   |-- content/
+|   |   |-- blog/
+|   |   `-- pages/
+|   |-- layouts/
+|   |-- pages/
+|   |-- styles/
+|   `-- utils/
+|-- astro.config.mjs
+`-- package.json
 ```
+
+## Como leer el proyecto
+
+Si quieres entenderlo de forma progresiva, este orden suele funcionar bien:
+
+### 1. Configuracion global
+
+- `astro.config.mjs`
+- `src/config/site.ts`
+- `.github/workflows/deploy.yml`
+
+Aqui se define:
+
+- la URL publica
+- la subruta de GitHub Pages
+- el branding base
+- la forma en la que el sitio se construye y despliega
+
+### 2. Modelo de contenido
+
+- `src/content.config.ts`
+- `src/content/blog/`
+- `src/content/pages/`
+
+Aqui esta el contrato real entre contenido, frontend y CMS.
+
+Si cambias un campo del frontmatter, normalmente tendras que revisar:
+
+1. el esquema en `src/content.config.ts`
+2. el panel de Decap en `public/admin/index.html`
+3. el componente o pagina que lo renderiza
+
+### 3. Logica reutilizable
+
+- `src/utils/blog.ts`
+- `src/utils/format.ts`
+- `src/utils/links.ts`
+
+Estas utilidades hacen que las paginas Astro no acumulen logica repetida.
+
+### 4. Presentacion
+
+- `src/layouts/BaseLayout.astro`
+- `src/components/`
+- `src/styles/global.css`
+
+Aqui vive el tono editorial del proyecto: layout, cabecera, tarjetas, jerarquia visual y comportamiento del header.
+
+### 5. Rutas publicas
+
+- `src/pages/index.astro`
+- `src/pages/blog/index.astro`
+- `src/pages/blog/[slug].astro`
+- `src/pages/temas/[tag].astro`
+- `src/pages/sobre-este-blog.astro`
+
+Estas rutas convierten contenido tipado en paginas estaticas reales.
 
 ## Comandos importantes
 
@@ -51,117 +110,53 @@ npm run check
 npm run build
 ```
 
-### Cuando usar cada uno
+## Cuando usar cada comando
 
-- `npm run dev`: levanta solo Astro
-- `npm run dev:cms`: levanta el proxy local de Decap en `http://localhost:8081`
-- `npm run dev:full`: arranca Astro y Decap a la vez
-- `npm run check`: valida tipos y colecciones
-- `npm run build`: genera la version lista para produccion
+- `npm run dev`: arranca solo Astro
+- `npm run dev:cms`: arranca solo `decap-server`
+- `npm run dev:full`: arranca Astro y el proxy local del CMS
+- `npm run check`: valida tipos, rutas y colecciones
+- `npm run build`: genera la version estatica de produccion
 
-## Flujo recomendado de trabajo
+## Flujo editorial local
 
-### 1. Desarrollo del sitio
+1. Ejecuta `npm run dev:full`
+2. Abre `http://localhost:4321`
+3. Entra en `http://localhost:4321/admin/`
+4. Edita contenido desde Decap
+5. Astro recompone la web con los archivos Markdown actualizados
 
-```bash
-npm run dev
-```
+## Decap CMS: lo que conviene entender
 
-### 2. Edicion local con Decap CMS
+Decap no sirve las paginas. Decap edita archivos del repositorio.
 
-```bash
-npm run dev:full
-```
+El flujo real es este:
 
-Despues abre:
+1. un editor crea o modifica contenido en `/admin`
+2. Decap guarda Markdown dentro de `src/content`
+3. Astro usa ese contenido para generar HTML estatico
+4. GitHub Pages publica el resultado del build
 
-- sitio: `http://localhost:4321`
-- panel CMS: `http://localhost:4321/admin/`
+## Produccion en GitHub Pages
 
-## Como funciona el contenido
+La web publica funciona ya con GitHub Actions, pero el panel `/admin` en produccion tiene un matiz importante:
 
-### Blog
+- para leer el panel, basta con publicar los archivos
+- para guardar cambios en GitHub desde el navegador, hace falta OAuth
 
-Los posts viven en:
+Eso significa que GitHub Pages publica la web sin problema, pero Decap necesita un proxy OAuth adicional para escribir en el repositorio desde produccion.
 
-```text
-src/content/blog/
-```
+## Errores comunes que esta base intenta evitar
 
-Cada archivo Markdown pertenece a la coleccion `blog` y debe respetar el esquema definido en:
+- mezclar logica editorial en cada pagina en lugar de centralizarla en utilidades
+- cambiar el frontmatter sin actualizar el schema
+- olvidar la subruta del repositorio en GitHub Pages
+- asumir que Decap "ya funciona" en produccion sin resolver autenticacion
 
-```text
-src/content.config.ts
-```
+## Proximos pasos razonables
 
-Esto es importante porque Astro valida el frontmatter y evita muchos errores comunes antes de desplegar.
-
-### Paginas fijas
-
-Las paginas editables pero no listables viven en:
-
-```text
-src/content/pages/
-```
-
-En esta base ya se incluye `sobre-este-blog.md`.
-
-## Decap CMS: lo importante de verdad
-
-### Modo local
-
-Esta base ya queda lista para editar contenido en local con `decap-server`.
-
-### Produccion en GitHub Pages
-
-Aqui hay un matiz importante:
-
-- Decap CMS necesita autenticacion OAuth para escribir en GitHub
-- GitHub Pages por si sola no proporciona ese servidor de autenticacion
-
-Por eso el panel `/admin` queda preparado, pero para que edite en produccion necesitas uno de estos caminos:
-
-1. Montar un proxy OAuth para GitHub
-2. Mover el despliegue a Netlify y usar Git Gateway
-
-### Si quieres mantener GitHub Pages
-
-La opcion mas directa es usar un proxy OAuth externo y configurar estos valores en `public/admin/index.html`:
-
-- `window.DECAP_REPO`
-- `window.DECAP_AUTH_BASE_URL`
-- `window.DECAP_AUTH_ENDPOINT`
-
-La logica del panel ya esta preparada para aceptar esos valores.
-
-## Despliegue en GitHub Pages
-
-El workflow esta en:
-
-```text
-.github/workflows/deploy.yml
-```
-
-### Flujo esperado
-
-1. Subes el proyecto a GitHub
-2. Renombras la rama principal a `main` si aun no lo has hecho
-3. En GitHub activas Pages con fuente `GitHub Actions`
-4. Haces push a `main`
-
-### Variables opcionales
-
-Si usas dominio personalizado o necesitas forzar rutas, puedes definir variables en GitHub:
-
-- `SITE_URL`
-- `BASE_PATH`
-
-Si no las defines, el workflow intenta inferirlas automaticamente desde el nombre del repositorio.
-
-## Siguientes mejoras naturales
-
-- integrar Tailwind si quieres un sistema de utilidades
+- personalizar mas el contenido inicial
+- crear imagen Open Graph propia
 - anadir paginacion
 - anadir busqueda
-- anadir imagen Open Graph automatica
-- conectar un proveedor real de autenticacion para Decap en produccion
+- conectar OAuth para Decap en produccion

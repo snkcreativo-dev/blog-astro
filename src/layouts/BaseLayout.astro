@@ -23,6 +23,15 @@ const socialImage = Astro.site ? new URL(withBase('/favicon.svg'), Astro.site).t
 <!doctype html>
 <html lang="es">
 	<head>
+		<!--
+			BLOQUE: Metadatos base del sitio
+			- Este layout envuelve todas las paginas publicas.
+			- Aqui se centralizan SEO, Open Graph, favicon y fuentes.
+			
+			Por que es importante:
+			- Si esta informacion se repite pagina por pagina, el mantenimiento se complica enseguida.
+			- En Astro, un layout es el mejor sitio para compartir esta capa comun.
+		-->
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
@@ -58,6 +67,15 @@ const socialImage = Astro.site ? new URL(withBase('/favicon.svg'), Astro.site).t
 		</div>
 		<script is:inline>
 			(() => {
+				/**
+				 * BLOQUE: Header que se esconde al bajar
+				 * - Mantiene visible la cabecera al cargar y al subir.
+				 * - La oculta al hacer scroll descendente para dar mas espacio al contenido.
+				 *
+				 * Contexto practico:
+				 * - En una web editorial, el header suele ser alto por branding y navegacion.
+				 * - Esta tecnica evita que robe demasiada altura cuando el lector ya esta leyendo.
+				 */
 				const header = document.querySelector('.site-header');
 
 				if (!header) return;

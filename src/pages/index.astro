@@ -6,6 +6,15 @@ import { getPublishedPosts, getUniqueTags } from '../utils/blog';
 import { formatDate } from '../utils/format';
 import { withBase } from '../utils/links';
 
+/**
+ * BLOQUE: Consulta editorial de portada
+ * - Pide todos los posts publicados y luego separa varias "capas" de contenido.
+ * - Esa separacion no cambia los datos; solo define como se presentan en la portada.
+ *
+ * Como encaja con Astro:
+ * - Este codigo corre en build time porque la portada se genera de forma estatica.
+ * - Eso hace que la pagina salga ya lista, sin depender de peticiones en el navegador.
+ */
 const posts = await getPublishedPosts();
 const featuredPost = posts.find((post) => post.data.featured) ?? posts[0];
 const recentPosts = posts.filter((post) => post.id !== featuredPost?.id).slice(0, 3);
@@ -18,7 +27,7 @@ const columnStories = recentPosts.slice(1);
 	<section class="hero">
 		<div class="hero__panel hero__panel--lead">
 			<span class="eyebrow">Tema editorial</span>
-			<p class="hero__issue">Edicion 01 · Producto, frontend y cultura de construccion</p>
+			<p class="hero__issue">Edicion 01 / Producto, frontend y cultura de construccion</p>
 			<h1>Un blog que parece una revista digital y sigue siendo facil de mantener.</h1>
 			<p class="lede">
 				Portada con jerarquia, ritmo tipografico, criterio visual y una estructura de Astro
@@ -61,7 +70,7 @@ const columnStories = recentPosts.slice(1);
 						<h2>Articulo destacado</h2>
 						<p>
 							La portada gana peso cuando hay una historia principal y un contexto visual que la
-							acompaña.
+							acompana.
 						</p>
 					</div>
 				</div>
@@ -108,6 +117,11 @@ const columnStories = recentPosts.slice(1);
 		</div>
 
 		<div class="editorial-grid">
+			<!--
+				BLOQUE: Reticula editorial
+				- Reparte el contenido en historia principal, columna secundaria y bloque de contexto.
+				- No añade logica nueva: solo da jerarquia visual al mismo conjunto de posts.
+			-->
 			{leadStory && (
 				<div class="editorial-grid__lead">
 					<PostCard post={leadStory} />

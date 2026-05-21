@@ -13,6 +13,14 @@ const { post } = Astro.props;
 const readingTime = estimateReadingTime(post.body ?? '');
 ---
 
+<!--
+	BLOQUE: Tarjeta editorial de articulo
+	- Resume una entrada con metadata, extracto, portada y etiquetas.
+	- Se reutiliza en portada, archivo y lecturas relacionadas.
+
+	Por que existe:
+	- En Astro conviene encapsular estas piezas repetidas para que el diseño cambie en un solo sitio.
+-->
 <a class="post-card" href={withBase(`/blog/${post.id}/`)}>
 	{
 		post.data.cover && (
